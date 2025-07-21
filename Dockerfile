@@ -1,5 +1,5 @@
 # Pythonの公式イメージをベースにする
-FROM python:3.9-slim-buster
+FROM python:3.9-slim-bullseye
 
 # 作業ディレクトリを設定
 WORKDIR /app
