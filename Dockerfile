@@ -8,7 +8,7 @@ WORKDIR /app
 # ここでは例としてCFRの特定のバージョンをダウンロードしています。
 # 最新版は以下で確認してください: https://www.benf.org/other/cfr/
 RUN mkdir -p /app/decompiler
-ADD https://www.benf.org/other/cfr/cfr-0.152.jar /app/decompiler/cfr-0.152.jar
+ADD decompiler/cfr-0.152.jar /app/decompiler/cfr-0.152.jar
 # 必要に応じてJavaランタイムをインストール (Pythonイメージには含まれていない場合があるため)
 RUN apt-get update && apt-get install -y openjdk-11-jre-headless && rm -rf /var/lib/apt/lists/*
 
