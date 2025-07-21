@@ -1,8 +1,41 @@
 services:
   - type: web
     name: javadecompire
-    env: Docker
-    region: Oregon
-    plan: free
-#    buildCommand: "pip install -r requirements.txt"
-#    startCommand: "uvicorn --port $PORT --host 0.0.0.0 main:app"
+    env: docker # 環境として Docker を指定します
+    dockerfilePath: ./Dockerfile # Dockerfile のパスを指定します (通常はプロジェクトのルート)
+#    buildCommand: # オプション: Docker イメージをビルドする前に実行するコマンド
+#    startCommand: # オプション: Docker イメージが起動した後に実行するコマンド
+    # 以下の環境変数やリソース設定は、必要に応じて追加・変更してください
+    envVars:
+      - key: PORT
+        value: "80" # DockerfileでEXPOSEしているポートに合わせてください
+      - key: NODE_ENV
+        value: production
+      # その他の環境変数
+      # - key: DATABASE_URL
+      #   value: ${database.url} # Renderのデータベースを使う場合など
+
+    # 外部からのアクセスを許可するポート（Webサービスの場合）
+    # DockerfileでEXPOSEしているポートと一致させる必要があります
+    # Webサービスの場合、デフォルトは80/443ですが、明示的に設定することもできます
+    # port: 80 # 例: DockerfileがEXPOSE 80の場合
+
+    # リソース設定（オプション）
+    # resources:
+    #   cpu: 1
+    #   memory: 512MB
+    #   disk: 1GB
+
+    # ヘルスチェック（オプション）
+    # healthCheckPath: /health # ヘルスチェックのパス
+
+    # 自動スケーリング（Webサービスの場合、オプション）
+    # scaling:
+    #   minInstances: 1
+    #   maxInstances: 2
+
+# Renderでデータベースなどの他のサービスも使う場合は、以下に追加します
+# databases:
+#   - name: my-database
+#     type: postgres
+#     plan: free
