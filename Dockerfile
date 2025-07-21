@@ -26,23 +26,26 @@ RUN apt-get update && apt-get install -y apt-transport-https ca-certificates cur
     curl -sSL https://dot.net/v1/dotnet-install.sh | bash /dev/stdin --channel 8.0 --runtime dotnet && \
     ln -s /root/.dotnet/dotnet /usr/local/bin/dotnet
 
+
+
+ 
 # Dockerfile: ILSpycmdのダウンロードと配置の部分
 
 # 画像からバージョンとファイル名を取得
 ARG ILSPY_VERSION="9.1.0.7988"
-ARG ILSPY_RELEASE_DIR="v9.1" # リリースディレクトリが 'v9.1' に変更
+ARG ILSPY_RELEASE_DIR="v9.1"
 ARG ILSPY_ZIP_FILE="ILSpy_selfcontained_${ILSPY_VERSION}-x64.zip"
 
 RUN apt-get update && apt-get install -y unzip curl && \
     curl -f -sSL "https://github.com/icsharpcode/ILSpy/releases/download/${ILSPY_RELEASE_DIR}/${ILSPY_ZIP_FILE}" -o /tmp/ILSpy.zip && \
     ls -lh /tmp/ILSpy.zip && \
-    unzip /tmp/ILSpy.zip -d /app/ilspy && \ # ilspy ディレクトリに展開
-    rm /tmp/ILSpy.zip
+    unzip /tmp/ILSpy.zip -d /app/ilspy && \
+    rm /tmp/ILSpy.zip  # ここが重要: 前の行のバックスラッシュの後に続ける
 
-# 重要: selfcontained版を使う場合、別途 .NET SDK のインストールは不要なはずです。
-# もしDockerfileに以下の行がある場合、一旦コメントアウトするか削除してください。
-# RUN curl -sSL https://dot.net/v1/dotnet-install.sh | bash /dev/stdin --channel 8.0 --runtime dotnet ...
-# ENV PATH="/root/.dotnet:${PATH}" # これも不要になる可能性が高い
+
+
+
+
 
 
 # Jadx のダウンロードと配置
