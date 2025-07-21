@@ -26,16 +26,24 @@ RUN apt-get update && apt-get install -y apt-transport-https ca-certificates cur
     curl -sSL https://dot.net/v1/dotnet-install.sh | bash /dev/stdin --channel 8.0 --runtime dotnet && \
     ln -s /root/.dotnet/dotnet /usr/local/bin/dotnet
 
-# ILSpycmd のダウンロードと配置
-# リリースバージョンはILSpycmdのGitHubリリースページで確認してください
-ARG ILSPYCMD_VERSION="8.2.0-preview.2" # 例: 最新の安定版またはプレビュー版
-RUN apt-get install -y unzip && \
-    curl -sSL "https://github.com/icsharpcode/ILSpy/releases/download/v${ILSPYCMD_VERSION}/ILSpycmd-${ILSPYCMD_VERSION}.zip" -o /tmp/ILSpycmd.zip && \
-    unzip /tmp/ILSpycmd.zip -d /app/ilspycmd && \
-    rm /tmp/ILSpycmd.zip
+# Dockerfile: ILSpycmdのダウンロードと配置の部分
 
-# ILSpycmdをPATHに追加 (これにより、どこからでもdotnet /app/ilspycmd/ILSpycmd.dll で実行可能)
-ENV PATH="/root/.dotnet:${PATH}"
+# 画像からバージョンとファイル名を取得
+ARG ILSPY_VERSION="9.1.0.7988"
+ARG ILSPY_RELEASE_DIR="v9.1" # リリースディレクトリが 'v9.1' に変更
+ARG ILSPY_ZIP_FILE="ILSpy_selfcontained_${ILSPY_VERSION}-x64.zip"
+
+RUN apt-get update && apt-get install -y unzip curl && \
+    curl -f -sSL "https://github.com/icsharpcode/ILSpy/releases/download/${ILSPY_RELEASE_DIR}/${ILSPY_ZIP_FILE}" -o /tmp/ILSpy.zip && \
+    ls -lh /tmp/ILSpy.zip && \
+    unzip /tmp/ILSpy.zip -d /app/ilspy && \ # ilspy ディレクトリに展開
+    rm /tmp/ILSpy.zip
+
+# 重要: selfcontained版を使う場合、別途 .NET SDK のインストールは不要なはずです。
+# もしDockerfileに以下の行がある場合、一旦コメントアウトするか削除してください。
+# RUN curl -sSL https://dot.net/v1/dotnet-install.sh | bash /dev/stdin --channel 8.0 --runtime dotnet ...
+# ENV PATH="/root/.dotnet:${PATH}" # これも不要になる可能性が高い
+
 
 # Jadx のダウンロードと配置
 # リリースバージョンはJadxのGitHubリリースページで確認してください
